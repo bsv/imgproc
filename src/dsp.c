@@ -59,7 +59,6 @@ void smoothing(Image src, Image dst) {
 			      8, 4, 8,
 			     16, 8, 16 };
 
-    int x_part = 0;
     int res_r = 0;
     int res_g = 0;
     int res_b = 0;
@@ -84,6 +83,62 @@ void smoothing(Image src, Image dst) {
             dst.data[y*dst.width + x].r = res_r;
             dst.data[y*dst.width + x].g = res_g;
             dst.data[y*dst.width + x].b = res_b;
+        }
+    }
+}
+
+Pixel getMedian(Pixel * core, int size) {
+
+    int mas[size*size];
+
+    Pixel median_px;
+
+    // initialization
+    for(int i = 0; i < size*size; i++) {
+        mas[i] = (core[i].r + core[i].g + core[i].b)/3;
+    }
+
+    // sorting
+    for(int i = 0; i < size*size-1; i++) {
+
+        int max_i = i;
+        for(int j = i+1; j < size*size; j++) {
+            if(mas[j] > mas[max_i]) max_i = j;
+        }
+        int buf = 0;
+        buf = mas[i];
+        mas[i] = mas[max_i];
+        mas[max_i] = buf;
+
+    }
+
+    int median_index = size*size/2-1;
+
+    median_px.r = mas[median_index];
+    median_px.g = mas[median_index];
+    median_px.b = mas[median_index];
+
+    return median_px;
+}
+
+void medianFilt(Image src, Image dst) {
+
+    int res_r = 0;
+    int res_g = 0;
+    int res_b = 0;
+
+    const int CORE_SIZE = 3;
+    Pixel core[CORE_SIZE*CORE_SIZE];
+    Pixel median_px;
+
+    for(int y = 0; y < src.height; y++) {
+        for(int x = 0; x < src.width; x++) {
+            getCore(src, core, x, y, CORE_SIZE);
+            median_px = getMedian(core, CORE_SIZE);
+
+            dst.data[y*dst.width + x].r = median_px.r;
+            dst.data[y*dst.width + x].g = median_px.g;
+            dst.data[y*dst.width + x].b = median_px.b;
         }
     }
 }

@@ -37,6 +37,9 @@ int main(int argc, char *argv[]) {
 
     smoothing(img, res_img);
     saveBMP("smooth.bmp", res_img);
+
+    medianFilt(img, res_img);
+    saveBMP("median.bmp", res_img);
     
     delete [] img.data;
     delete [] res_img.data;
