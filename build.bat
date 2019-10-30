@@ -1,0 +1,1 @@
+g++ src/dsp.c src/bmp.c src/main.c -o lab2
