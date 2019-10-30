@@ -38,12 +38,6 @@ void sobel(Image src, Image dst)
         for(int x = 0; x < src.width; x++) {
             getCore(src, core, x, y, CORE_SIZE);
 
-            if((x == 1) && (y == 1)) {
-                for(int j = 0; j < 9; j++){
-                    printf("core[%d] = %d\n", j, core[j].r);
-                }
-            }
-
             x_part = 0;
             y_part = 0;
 
@@ -58,5 +52,38 @@ void sobel(Image src, Image dst)
             dst.data[y*dst.width + x].b = res_val;
         }
     }
+}
 
+void smoothing(Image src, Image dst) {
+    int filt[] = {16, 8, 16,
+			      8, 4, 8,
+			     16, 8, 16 };
+
+    int x_part = 0;
+    int res_r = 0;
+    int res_g = 0;
+    int res_b = 0;
+
+    const int CORE_SIZE = 3;
+    Pixel core[CORE_SIZE*CORE_SIZE];
+
+    for(int y = 0; y < src.height; y++) {
+        for(int x = 0; x < src.width; x++) {
+            getCore(src, core, x, y, CORE_SIZE);
+
+            res_r = 0;
+            res_g = 0;
+            res_b = 0;
+
+            for(int i = 0; i < CORE_SIZE*CORE_SIZE; i++) {
+                res_r += core[i].r/filt[i];
+                res_g += core[i].g/filt[i];
+                res_b += core[i].b/filt[i];
+            }
+
+            dst.data[y*dst.width + x].r = res_r;
+            dst.data[y*dst.width + x].g = res_g;
+            dst.data[y*dst.width + x].b = res_b;
+        }
+    }
 }

@@ -33,8 +33,10 @@ int main(int argc, char *argv[]) {
     res_img.data = new Pixel[res_img.width*res_img.height];
 
     sobel(img, res_img);
-    printf("Save img\n");
-    saveBMP("out.bmp", res_img);
+    saveBMP("sobel.bmp", res_img);
+
+    smoothing(img, res_img);
+    saveBMP("smooth.bmp", res_img);
     
     delete [] img.data;
     delete [] res_img.data;
