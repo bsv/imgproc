@@ -87,6 +87,44 @@ void smoothing(Image src, Image dst) {
     }
 }
 
+void laplacian(Image src, Image dst) {
+    int filt[] = {0, 1, 0,
+			      1, -4, 1,
+			      0, 1, 0 };
+
+    int res_r = 0;
+    int res_g = 0;
+    int res_b = 0;
+
+    const int CORE_SIZE = 3;
+    Pixel core[CORE_SIZE*CORE_SIZE];
+
+    for(int y = 0; y < src.height; y++) {
+        for(int x = 0; x < src.width; x++) {
+            getCore(src, core, x, y, CORE_SIZE);
+
+            res_r = 0;
+            res_g = 0;
+            res_b = 0;
+
+            for(int i = 0; i < CORE_SIZE*CORE_SIZE; i++) {
+                res_r += core[i].r * filt[i];
+                res_g += core[i].g * filt[i];
+                res_b += core[i].b * filt[i];
+            }
+
+            if(abs(res_r) > 255) res_r = 255;
+            if(abs(res_g) > 255) res_g = 255;
+            if(abs(res_b) > 255) res_b = 255;
+
+            int px_index = y*dst.width + x;
+            dst.data[px_index].r = src.data[px_index].r + abs(res_r);
+            dst.data[px_index].g = src.data[px_index].g + abs(res_g);
+            dst.data[px_index].b = src.data[px_index].b + abs(res_b);
+        }
+    }
+}
+
 Pixel getMedian(Pixel * core, int size) {
 
     int mas[size*size];

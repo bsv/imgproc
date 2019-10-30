@@ -40,6 +40,9 @@ int main(int argc, char *argv[]) {
 
     medianFilt(img, res_img);
     saveBMP("median.bmp", res_img);
+
+    laplacian(img, res_img);
+    saveBMP("laplacian.bmp", res_img);
     
     delete [] img.data;
     delete [] res_img.data;
